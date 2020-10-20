@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
 	cam3D.CameraSetup(camera, pos, target, up);
 
 	//Level Setup
+	int currentLevel = 1;
 	Level level01;
 
 	while (!WindowShouldClose()) {
