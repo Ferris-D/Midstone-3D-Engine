@@ -19,15 +19,27 @@ int main(int argc, char* argv[]) {
 	cam3D.CameraSetup(camera, pos, target, up);
 
 	//Level Setup
-	int currentLevel = 1;
-	Level level01;
+	Level level01(1,30);
 
 	while (!WindowShouldClose()) {
+
 		UpdateCamera(&camera);
 
 		BeginDrawing();
 		ClearBackground(BLACK);
+
 		BeginMode3D(camera);
+
+		DrawPlane(Vector3{ 0.0f, 0.0f, 0.0f }, Vector2{ 32.0f, 32.0f }, LIGHTGRAY); // Draw ground
+
+		level01.CreateLevel(level01);
+
+		// Draw the cubes using the randomised arrays
+		for (int i = 0; i < level01.objectCount; i++)
+		{
+			DrawCube(level01.positions[i], 2.0f, level01.heights[i], 2.0f, level01.colors[i]);
+			DrawCubeWires(level01.positions[i], 2.0f, level01.heights[i], 2.0f, MAROON);
+		}
 
 		EndMode3D();
 
