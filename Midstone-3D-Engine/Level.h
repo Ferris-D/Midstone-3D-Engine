@@ -5,20 +5,18 @@
 class Level
 {
 public:
-	Level();
-	Level(int lvlNum,int objNum);
-	~Level();
-
 	// The levels number
 	int lvlNumber;
 	// Amount of objects in the level
 	int objectCount;
-
 	// Arrays for level generation
-	float heights{};
-	Vector3 positions{};
-	Color colors{};
+	float heights[50] = {};
+	Vector3 positions[50] = {};
+	Color colors[50] = {};
 
+	Level();
+	Level(int lvlNum, int objNum);
+	~Level();
 	void CreateLevel(Level lvl);
 };
 
