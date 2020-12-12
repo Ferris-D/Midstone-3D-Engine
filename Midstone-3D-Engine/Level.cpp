@@ -5,12 +5,6 @@ Level::Level()
 {
     lvlNumber = 0;
     objectCount = 20;
-    for (int i = 0; i < sizeof(heights); i++)
-    {
-        heights[i] = { 0 };
-        positions[i] = { 0 };
-        colors[i] = { 0 };
-    }
 }
 
 Level::Level(int lvlNum, int objNum)
@@ -19,9 +13,17 @@ Level::Level(int lvlNum, int objNum)
     objectCount = objNum;
 
     // Create arrays for height, position, and color
-    //heights = {objNum};
-    //positions = Vector3{objNum};
-    //colors = Color{objNum};
+    float* newheights = new float[objNum]{ 0 };
+    heights = newheights;
+    Vector3* newpositions = new Vector3[objNum]{ 0 };
+    positions = newpositions;
+    Color* newcolors = new Color[objNum]{ 0 };
+    colors = newcolors;
+
+    // Delete the temporary arrays
+    delete[] newheights;
+    delete[] newpositions;
+    delete[] newcolors;
 }
 
 Level::~Level()
@@ -36,14 +38,11 @@ void Level::CreateLevel(Level lvl)
     {
         //
         lvl.heights[i] = (float)GetRandomValue(1, 12);
-        //heights[i] = (float)GetRandomValue(1, 12);
-        lvl.positions[i] = Vector3{ positions[i].x = (GetRandomValue(-15, 15), positions[i].y = heights[i] / 2, positions[i].z = (GetRandomValue(-15, 15))) };
+        lvl.positions[i] = Vector3{
+            (positions[i].x = (GetRandomValue(-15, 15))),
+            (positions[i].y = heights[i] / 2),
+            (positions[i].z = (GetRandomValue(-15, 15)))};
         lvl.colors[i] = Color{ colors[i].r = GetRandomValue(20, 255), colors[i].g = GetRandomValue(10, 55), 30, 255 };
-           // Color{ GetRandomValue(20, 255), GetRandomValue(10, 55), 30, 255 };
     }
 
-    // Delete the arrays as to not cause a memory leak
-    delete[] heights;
-    delete[] positions;
-    delete[] colors;
 }

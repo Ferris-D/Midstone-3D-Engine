@@ -5,10 +5,12 @@
 class Camera_3D
 {
 public:
+	Camera3D cam;
+
 	Camera_3D();
-	Camera_3D(Camera name);
 	~Camera_3D();
-	void CameraSetup(Camera name, Vector3 pos, Vector3 target, Vector3 up);
+	void CameraSetup(Vector3 pos, Vector3 target, Vector3 up);
+	void CurrentPos(Camera name);
 };
 
 #endif
