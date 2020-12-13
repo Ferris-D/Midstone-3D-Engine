@@ -54,7 +54,8 @@ int main(int argc, char* argv[]) {
 			ClearBackground(RAYWHITE);
 
 			BeginMode3D(cam3D.cam);
-
+				
+				// Draws the bounding area for the level
 				DrawPlane(Vector3{ 0.0f, 0.0f, 0.0f }, Vector2{ 52.0f, 52.0f }, BLACK);
 				DrawCube(Vector3{ -26.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 52.0f, GREEN);	
 				DrawCube(Vector3{ 26.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 52.0f, GREEN);	
@@ -78,8 +79,6 @@ int main(int argc, char* argv[]) {
 				if (IsKeyPressed(KEY_SPACE) && character.position.y == 0.0f)
 				{
 					std::cout << "Character Jumps" << std::endl;
-					//character.position.y += 10.0f;
-					//character.ApplyForce(Vector3{ 0.0f, 100.0f, 0.0 });
 					character.velocity.y = 10.0f;
 				}
 
@@ -99,10 +98,10 @@ int main(int argc, char* argv[]) {
 
 			EndMode3D();
 
+			// UI for controls
 			DrawRectangle(10, 10, 220, 100, Fade(BLACK , 0.6f));
 			DrawRectangleLines(10, 10, 220, 100, GRAY);
-
-			DrawText("First person camera default controls:", 20, 20, 10, BLACK);
+			DrawText("Controls:", 20, 20, 10, WHITE);
 			DrawText("- Move with keys: W, A, S, D", 40, 40, 10, WHITE);
 			DrawText("- Spacebar to Jump", 40, 60, 10, WHITE);
 			DrawText("- F2 to randomize the cubes", 40, 80, 10, WHITE);
