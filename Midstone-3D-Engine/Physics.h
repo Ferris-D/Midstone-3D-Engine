@@ -4,14 +4,20 @@
 
 class Physics
 {
+public:
 	Vector3 position;
 	Vector3 forward;
+	Vector3 acceleration;
+	Vector3 velocity;
 	float mass;
+	float totalTime;
 
 	Physics();
 	~Physics();
-	void characterSetup(Vector3 pos, Vector3 forward, float mass);
-	void gravity(float mass);
+	void characterSetup(Vector3 posS, Vector3 forwardS, float massS);
+	void ApplyForce(Vector3 force);
+	void gravity(float deltaTime);
+	void CurrentPos(Physics name);
 };
 
 #endif

@@ -36,10 +36,9 @@ void Level::CreateLevel(Level lvl)
     // Populate the arrays with random values
     for (int i = 0; i< lvl.objectCount; i++)
     {
-        //
         lvl.heights[i] = (float)GetRandomValue(1, 12);
         lvl.positions[i] = Vector3{
-            (positions[i].x = (GetRandomValue(-15, 15))),
+            (positions[i].x = (GetRandomValue(-25, 25))),
             (positions[i].y = heights[i] / 2),
             (positions[i].z = (GetRandomValue(-15, 15)))};
         lvl.colors[i] = Color{ colors[i].r = GetRandomValue(20, 255), colors[i].g = GetRandomValue(10, 55), 30, 255 };

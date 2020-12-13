@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include "Camera_3D.h"
 #include "Level.h"
+#include "Physics.h"
 #include <iostream>
 
 int main(int argc, char* argv[]) {
@@ -11,28 +12,41 @@ int main(int argc, char* argv[]) {
 
 	SetTargetFPS(60);
 
+	//Character setup
+	Physics character;
+	character.characterSetup({ 4.0f,2.0f,4.0f }, { 0.0f,0.0f,0.0f }, 100.0f);
+
 	//Camera Setup
 	Camera_3D cam3D;
-	cam3D.CameraSetup(Vector3{ 4.0f, 2.0f, 4.0f },
-					  Vector3{ 0.0f, 1.8f, 0.0f }, 
+	cam3D.CameraSetup(character.position,
+					  character.forward, 
 					  Vector3{ 0.0f, 1.0f, 0.0f });
 
 	//Level Setup
 	Level level01(1,20);
 	level01.CreateLevel(level01);
 
-	int seconds = 0;
+	int time = 0;
 
-	SetTargetFPS(60); // Set our game to run at 60 frames-per-second
 	while (!WindowShouldClose()) {
 
+		// Update camera position and target
 		UpdateCamera(&cam3D.cam);
+		cam3D.cam.position.y = character.position.y + 2.0f;
+		character.position.x = cam3D.cam.position.x;
+		character.position.z = cam3D.cam.position.z;
+		character.forward = cam3D.cam.target;
 
-		seconds++;
-		if (seconds >= 100)
+		// Updating physics
+		character.gravity(0.01);
+
+		// Printing info to the console
+		time++;
+		if (time >= 100)
 		{
 			cam3D.CurrentPos(cam3D.cam);
-			seconds = 0;
+			character.CurrentPos(character);
+			time = 0;
 		}
 
 		BeginDrawing();
@@ -41,17 +55,16 @@ int main(int argc, char* argv[]) {
 
 			BeginMode3D(cam3D.cam);
 
-				DrawPlane(Vector3{ 0.0f, 0.0f, 0.0f }, Vector2{ 32.0f, 32.0f }, LIGHTGRAY); // Draw ground
-				DrawCube(Vector3{ -16.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 32.0f, BLUE);     // Draw a blue wall
-				DrawCube(Vector3{ 16.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 32.0f, LIME);      // Draw a green wall
-				DrawCube(Vector3{ 0.0f, 2.5f, 16.0f }, 32.0f, 5.0f, 1.0f, GOLD);      // Draw a yellow wall
+				DrawPlane(Vector3{ 0.0f, 0.0f, 0.0f }, Vector2{ 52.0f, 52.0f }, BLACK);
+				DrawCube(Vector3{ -26.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 52.0f, GREEN);	
+				DrawCube(Vector3{ 26.0f, 2.5f, 0.0f }, 1.0f, 5.0f, 52.0f, GREEN);	
+				DrawCube(Vector3{ 0.0f, 2.5f, 26.0f }, 52.0f, 5.0f, 1.0f, GREEN);	
 
 				// Draw the cubes using the randomised arrays
-				
 				for (int i = 0; i < level01.objectCount; i++)
 				{
-				DrawCube(level01.positions[i], 2.0f, level01.heights[i], 2.0f, level01.colors[i]);
-				DrawCubeWires(level01.positions[i], 2.0f, level01.heights[i], 2.0f, MAROON);
+					DrawCube(level01.positions[i], 2.0f, level01.heights[i], 2.0f, level01.colors[i]);
+					DrawCubeWires(level01.positions[i], 2.0f, level01.heights[i], 2.0f, MAROON);
 				}
 
 				// F2 re randomize cubes
@@ -62,20 +75,37 @@ int main(int argc, char* argv[]) {
 				}
 				
 				// What to do on jump
-				if (IsKeyPressed(KEY_SPACE))
+				if (IsKeyPressed(KEY_SPACE) && character.position.y == 0.0f)
 				{
 					std::cout << "Character Jumps" << std::endl;
-					cam3D.cam.position.y++;
+					//character.position.y += 10.0f;
+					//character.ApplyForce(Vector3{ 0.0f, 100.0f, 0.0 });
+					character.velocity.y = 10.0f;
+				}
+
+				// Gravity
+				if (character.position.y > 0)
+				{
+					character.ApplyForce(Vector3{ 0.0f, -9.8f * character.mass, 0.0 });
+				}
+
+				//Stop gravity when hitting ground
+				if (character.position.y < 0)
+				{
+					character.position.y = 0.0f;
+					character.velocity = { 0.0f,0.0f,0.0f };
+					character.acceleration = { 0.0f,0.0f,0.0f };
 				}
 
 			EndMode3D();
 
-			DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
-			DrawRectangleLines(10, 10, 220, 70, BLUE);
+			DrawRectangle(10, 10, 220, 100, Fade(BLACK , 0.6f));
+			DrawRectangleLines(10, 10, 220, 100, GRAY);
 
 			DrawText("First person camera default controls:", 20, 20, 10, BLACK);
-			DrawText("- Move with keys: W, A, S, D", 40, 40, 10, DARKGRAY);
-			DrawText("- F2 to randomize the cubes", 40, 60, 10, DARKGRAY);
+			DrawText("- Move with keys: W, A, S, D", 40, 40, 10, WHITE);
+			DrawText("- Spacebar to Jump", 40, 60, 10, WHITE);
+			DrawText("- F2 to randomize the cubes", 40, 80, 10, WHITE);
 
 		EndDrawing();
 	}
